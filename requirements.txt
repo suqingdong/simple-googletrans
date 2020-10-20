@@ -1,0 +1,4 @@
+click
+googletrans
+prettytable
+simple-loggers
