@@ -28,8 +28,8 @@ class GoogleTrans(object):
     """
     logger = SimpleLogger('GoogleTrans')
 
-    def __init__(self, proxies=None, timeout=None):
-        self.translator = googletrans.Translator(proxies=proxies, timeout=timeout)
+    def __init__(self, service_url=None, proxies=None, timeout=None):
+        self.translator = googletrans.Translator(service_urls=[service_url], proxies=proxies, timeout=timeout)
         self.nltk_checked = False
 
     def translate(self, text, dest='zh-cn', **kwargs):
@@ -114,6 +114,7 @@ __epilog__ = 'contact: {__author__} <{__author_email__}>'.format(**locals())
 @click.command(epilog=__epilog__)
 @click.version_option(version=__version__, prog_name='simple_googletrans')
 @click.argument('text', nargs=-1)
+@click.option('-u', '--url', help='the url of google translate', default='translate.google.cn', show_default=True)
 @click.option('-d', '--dest', help='the dest language', default='zh-cn', show_default=True)
 @click.option('-o', '--output', help='the output of result [stdout]')
 @click.option('-l', '--list', help='list the available languages', is_flag=True)
@@ -128,7 +129,7 @@ def main(**kwargs):
         proxies = {protocol: '{protocol}://{host}'.format(**locals())}
         click.secho('use proxies: {protocol}://{host}'.format(**locals()), fg='yellow')
 
-    t = GoogleTrans(proxies=proxies, timeout=kwargs['timeout'])
+    t = GoogleTrans(service_url=kwargs['url'] ,proxies=proxies, timeout=kwargs['timeout'])
     if kwargs['list']:
         t.show_languages()
     else:
